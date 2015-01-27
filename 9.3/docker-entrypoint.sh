@@ -55,7 +55,6 @@ if [ "$1" = 'postgres' ]; then
 	chown -R postgres $PGDATA
 	
 	if [ -z "$(ls -A "$PGDATA")" ]; then
-		gosu postgres initdb
         preparepg
 		
 		if [ -d /docker-entrypoint-initdb.d ]; then
