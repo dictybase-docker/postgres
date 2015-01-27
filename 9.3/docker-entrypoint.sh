@@ -2,7 +2,7 @@
 set -e
 
 startpgback() {
-    gosu postgres pg_ctl start
+    gosu postgres pg_ctl -l /tmp/orebaba start
 }
 
 stoppg() {
