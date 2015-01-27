@@ -11,7 +11,7 @@ cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
 
 versions=( */ )
 versions=( "${versions[@]%/}" )
-url='git://github.com/docker-library/postgres'
+url='git://github.com/dictybase-docker/postgres'
 
 echo '# maintainer: InfoSiftr <github@infosiftr.com> (@infosiftr)'
 
