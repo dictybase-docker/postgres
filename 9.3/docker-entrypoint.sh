@@ -19,12 +19,13 @@ preparepg() {
     then
         pass='$POSTGRES_PASSWORD'
     else
-        cat >&2 <<-'EOWARN'
+        read -r -d '' warning <<-EOWARN
             ****************************************************
                 No password has been given for superuser postgres.
                 Using default password *postgres*
             ****************************************************
-        EOWARN
+EOWARN
+        echo $warning
         pass='postgres'
     fi
     gosu postgres psql -U postgres -c "ALTER ROLE postgres WITH ENCRYPTED PASSWORD $pass"
