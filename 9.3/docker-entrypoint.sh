@@ -55,6 +55,12 @@ if [ "$1" = 'postgres' ]; then
 			done
             stoppg
 		fi
+
+        #copy custom config
+        if [ -d /config ]
+        then
+            mv /config/*.conf ${PGDATA}/
+        fi
 	fi
 	
 	exec gosu postgres "$@"
