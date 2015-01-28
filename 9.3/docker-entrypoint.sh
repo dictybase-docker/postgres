@@ -3,10 +3,12 @@ set -e
 
 startpgback() {
     gosu postgres pg_ctl -l /tmp/orebaba start
+    logger -s starting postgresql service
 }
 
 stoppg() {
     gosu postgres pg_ctl stop
+    logger -s stopping postgresql service
 }
 
 preparepg() {
