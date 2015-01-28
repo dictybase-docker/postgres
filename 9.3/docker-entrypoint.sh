@@ -1,60 +1,40 @@
 #!/bin/bash
-set -e
+set -x
 
 startpgback() {
-    gosu postgres pg_ctl -l /tmp/orebaba start
-    cat /tmp/orebaba
     logger -s starting postgresql service
+    gosu postgres pg_ctl start
+    sleep 3
 }
 
 stoppg() {
-    gosu postgres pg_ctl stop
     logger -s stopping postgresql service
+    gosu postgres pg_ctl stop
 }
 
 preparepg() {
     # setup database
 	gosu postgres initdb
     startpgback
-    logger -s going to setup pass
 
     # account setup
     if [ ${POSTGRES_PASSWORD+defined} ]
     then
-        logger -s going to use given pass
-        pass='$POSTGRES_PASSWORD'
+        pass="'$POSTGRES_PASSWORD'"
     else
         logger -s going to use default pass
-        read -r -d '' warning <<-EOWARN
-            ****************************************************
-                No password has been given for superuser postgres.
-                Using default password *postgres*
-            ****************************************************
-EOWARN
-        echo $warning
-        pass='postgres'
+        pass="'postgres'"
     fi
-    logger -s going to change pass
+    logger -s "going to use password $pass"
     gosu postgres psql -U postgres -c "ALTER ROLE postgres WITH ENCRYPTED PASSWORD $pass"
     
     # create another superuser 
     if [ ${SUPERUSER+defined} -a ${SUPERPASS+defined} ]
     then
         gosu postgres createuser  -U postgres -d -E -l -s $SUPERUSER
-        gosu postgres psql -U postgres -c "ALTER ROLE docker PASSWORD '$SUPERPASS'"
+        gosu postgres psql -U postgres -c "ALTER ROLE $SUPERUSER PASSWORD '$SUPERPASS'"
         PGPASSWORD=$SUPERPASS createdb -U $SUPERUSER $SUPERUSER
     fi
-
-    # create folders
-    #if [ ! -e $BACKUP ]; then 
-        #mkdir -p $BACKUP
-        #chown postgres:postgres $BACKUP
-    #fi
-
-    #if [ ! -e $ARCHIVE ]; then 
-        #mkdir -p $ARCHIVE
-        #chown postgres:postgres $ARCHIVE
-    #fi
     stoppg
 }
 
