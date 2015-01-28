@@ -3,6 +3,7 @@ set -e
 
 startpgback() {
     gosu postgres pg_ctl -l /tmp/orebaba start
+    cat /tmp/orebaba
     logger -s starting postgresql service
 }
 
@@ -15,12 +16,15 @@ preparepg() {
     # setup database
 	gosu postgres initdb
     startpgback
+    logger -s going to setup pass
 
     # account setup
     if [ ${POSTGRES_PASSWORD+defined} ]
     then
+        logger -s going to use given pass
         pass='$POSTGRES_PASSWORD'
     else
+        logger -s going to use default pass
         read -r -d '' warning <<-EOWARN
             ****************************************************
                 No password has been given for superuser postgres.
@@ -30,6 +34,7 @@ EOWARN
         echo $warning
         pass='postgres'
     fi
+    logger -s going to change pass
     gosu postgres psql -U postgres -c "ALTER ROLE postgres WITH ENCRYPTED PASSWORD $pass"
     
     # create another superuser 
@@ -41,15 +46,15 @@ EOWARN
     fi
 
     # create folders
-    if [ ! -e $BACKUP ]; then 
-        mkdir -p $BACKUP
-        chown postgres:postgres $BACKUP
-    fi
+    #if [ ! -e $BACKUP ]; then 
+        #mkdir -p $BACKUP
+        #chown postgres:postgres $BACKUP
+    #fi
 
-    if [ ! -e $ARCHIVE ]; then 
-        mkdir -p $ARCHIVE
-        chown postgres:postgres $ARCHIVE
-    fi
+    #if [ ! -e $ARCHIVE ]; then 
+        #mkdir -p $ARCHIVE
+        #chown postgres:postgres $ARCHIVE
+    #fi
     stoppg
 }
 
