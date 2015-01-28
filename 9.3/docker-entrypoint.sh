@@ -15,6 +15,10 @@ stoppg() {
 preparepg() {
     # setup database
 	gosu postgres initdb
+    
+    #Add the custom config file
+    mv /pg_hba.conf /var/lib/postgresql/data/
+
     startpgback
 
     # account setup
