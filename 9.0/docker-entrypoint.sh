@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 startpgback() {
     logger -s starting postgresql service
@@ -16,9 +15,6 @@ preparepg() {
     # setup database
 	gosu postgres initdb
     
-    #Add the custom config file
-    mv /pg_hba.conf /var/lib/postgresql/data/
-
     startpgback
 
     # account setup
@@ -26,10 +22,9 @@ preparepg() {
     then
         pass="'$POSTGRES_PASSWORD'"
     else
-        logger -s going to use default pass
         pass="'postgres'"
     fi
-    logger -s "going to use password $pass"
+    logger -s going to use password $pass
     gosu postgres psql -U postgres -c "ALTER ROLE postgres WITH ENCRYPTED PASSWORD $pass"
     
     # create another superuser 
@@ -39,6 +34,10 @@ preparepg() {
         gosu postgres psql -U postgres -c "ALTER ROLE $SUPERUSER PASSWORD '$SUPERPASS'"
         PGPASSWORD=$SUPERPASS createdb -U $SUPERUSER $SUPERUSER
     fi
+
+    #Add the custom config file
+    #After this every command needs to supply a password
+    mv /pg_hba.conf /var/lib/postgresql/data/
     stoppg
 }
 
