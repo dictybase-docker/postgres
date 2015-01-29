@@ -43,6 +43,7 @@ ENV PGDATA /var/lib/postgresql/data
 
 COPY docker-entrypoint.sh /
 COPY pg_hba.conf /
+COPY postgres.conf /
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
