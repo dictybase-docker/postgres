@@ -28,7 +28,7 @@ preparepg() {
     gosu postgres psql -U postgres -c "ALTER ROLE postgres WITH ENCRYPTED PASSWORD $pass"
     
     # create another superuser 
-    if [ ${SUPERUSER+defined} -a ${SUPERPASS+defined} ]
+    if [ "${SUPERUSER+defined}" -a "${SUPERPASS+defined}" ]
     then
         gosu postgres createuser  -U postgres -d -E -l -s $SUPERUSER
         gosu postgres psql -U postgres -c "ALTER ROLE $SUPERUSER PASSWORD '$SUPERPASS'"
