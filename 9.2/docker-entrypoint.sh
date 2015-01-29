@@ -59,7 +59,12 @@ if [ "$1" = 'postgres' ]; then
         #copy custom config
         if [ -d /config ]
         then
-            mv /config/*.conf ${PGDATA}/
+            if ! [ -d ${PGDATA}/conf.d ]
+            then
+                mkdir -p ${PGDATA}/conf.d
+                chown -R postgres ${PGDATA}/conf.d
+            fi
+            mv /config/*.conf ${PGDATA}/conf.d/
         fi
 	fi
 	
