@@ -37,8 +37,8 @@ preparepg() {
 
     #Add the custom config file
     #After this every command needs to supply a password
-    mv /pg_hba.conf /var/lib/postgresql/data/
-    mv /postgresql.conf /var/lib/postgres/data/
+    mv /pg_hba.conf $PGDATA/
+    mv /postgresql.conf $PGDATA/
     stoppg
 }
 
