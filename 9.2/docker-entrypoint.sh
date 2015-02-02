@@ -43,6 +43,7 @@ if [ "$1" = 'postgres' ]; then
 	chown -R postgres $PGDATA
 
 	if [ -z "$(ls -A "$PGDATA")" ]; then
+        preparepg
 
         if ! [ -d ${PGDATA}/conf.d ]
         then
