@@ -7,9 +7,9 @@ preparepg() {
     # account setup
     if [ ${POSTGRES_PASSWORD+defined} ]
     then
-        pass="'$POSTGRES_PASSWORD'"
+        pass="$POSTGRES_PASSWORD"
     else
-        pass="'postgres'"
+        pass="postgres"
     fi
 
     logger -s going to use password $pass
