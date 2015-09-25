@@ -4,6 +4,11 @@ preparepg() {
     # setup database
 	gosu postgres initdb
 
+    if [ -e "/secrets/pgpass" ]
+    then
+        POSTGRES_PASSWORD=$(cat /secrets/pgpass)
+    fi
+
     # account setup
     if [ ${POSTGRES_PASSWORD+defined} ]
     then
@@ -16,6 +21,16 @@ preparepg() {
     gosu postgres postgres --single -E <<-EOSQL
         ALTER ROLE postgres WITH ENCRYPTED PASSWORD '$pass';
 EOSQL
+
+    if [ -e "/secrets/adminuser" -a -e "/secrets/adminpass" ]
+    then
+        ADMIN_USER=$(cat /secrets/adminuser)
+        ADMIN_PASS=$(cat /secrets/adminpass)
+        if [ -e "/secrets/admindb" ]
+        then
+            ADMIN_DB=$(cat /secrets/admindb)
+        fi
+    fi
 
     # create another superuser 
     if [ "${ADMIN_USER+defined}" -a "${ADMIN_PASS+defined}" ]
