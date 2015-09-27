@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 preparepg() {
     # setup database
 	gosu postgres initdb
@@ -57,7 +59,7 @@ EOSQL
 if [ "$1" = 'postgres' ]; then
 	chown -R postgres $PGDATA
 
-	if [ -z "$(ls -A "$PGDATA")" ]; then
+	if [ -s "$PGDATA/PG_VERSION" ]; then
         preparepg
 
         if ! [ -d ${PGDATA}/conf.d ]
