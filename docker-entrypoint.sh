@@ -59,7 +59,7 @@ EOSQL
 if [ "$1" = 'postgres' ]; then
 	chown -R postgres $PGDATA
 
-	if [ -s "$PGDATA/PG_VERSION" ]; then
+	if [ ! -e "$PGDATA/PG_VERSION" ]; then
         preparepg
 
         if ! [ -d ${PGDATA}/conf.d ]
